@@ -20,8 +20,28 @@ app.get("/quotes/random", (request, response) => {
 const pickFromArray = (arrayofQuotes) =>
   arrayofQuotes[Math.floor(Math.random() * arrayofQuotes.length)];
 
+// listen for requests :)
+
 const listener = app.listen(port, () => {
   console.log(
     "Your app is listening on port http://localhost:" + listener.address().port
   );
+});
+
+// Search for quotes by term
+
+app.get("/quotes/search", (request, response) => {
+  const searchTerm = request.query.term?.toLowerCase();
+
+  if (!searchTerm) {
+    return response.json({ error: "Please provide a search term." });
+  }
+
+  const filteredQuotes = quotes.filter(
+    (quote) =>
+      quote.quote.toLowerCase().includes(searchTerm) ||
+      quote.author.toLowerCase().includes(searchTerm)
+  );
+
+  response.json(filteredQuotes);
 });
